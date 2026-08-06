@@ -1,0 +1,245 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:VVOInfo.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="using:VVOInfo.Views"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="VVOInfo.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        x:Name="RootWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        
+Width="1500" Height="900"
+        Title="VVOInfo">
+  <Window.Resources>
+    <vm:DoubleToGridLengthConverter x:Key="GridLengthConverter" />
+  </Window.Resources>  
+          <!-- WindowState="FullScreen"     Width="1200" Height="600"    Width="1150" Height="600"  -->
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+  <Window.Styles>
+    <Style Selector="local|VvoIcon">
+      <!-- Definiert die Viewbox-Basisstruktur für die Skalierung -->
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Viewbox Width="{TemplateBinding Size}" Height="{TemplateBinding Size}">
+            <ContentControl Name="IconContent">
+              <!-- Standard-Fallback falls kein Typ matches (Tram) -->
+       <!--       <Border Width="100" Height="100" Background="#C60C30" CornerRadius="5">
+                <TextBlock Text="Tram" Foreground="White" FontWeight="Bold" FontSize="35"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Arial"/>
+              </Border>-->
+            </ContentControl>
+          </Viewbox>
+        </ControlTemplate>
+      </Setter>
+    </Style>
+
+    <!-- Trigger für: Tram (Rotes viereck) -->
+    <Style Selector="local|VvoIcon[Type=Tram] /template/ ContentControl#IconContent">
+      <Setter Property="Content">
+        <Template>
+          <Border Width="100" Height="100" Background="#C60C30" CornerRadius="5">
+            <TextBlock Text="Tram" Foreground="White" FontWeight="Bold" FontSize="35"
+                       HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Arial"/>
+          </Border>
+        </Template>
+      </Setter>
+    </Style>
+
+    <!-- Trigger für: ZUG (Grünes abgerundetes Quadrat) -->
+    <Style Selector="local|VvoIcon[Type=Zug] /template/ ContentControl#IconContent">
+      <Setter Property="Content">
+        <Template>
+          <Border Width="100" Height="100" Background="#007A33" CornerRadius="22">
+            <TextBlock Text="Zug" Foreground="White" FontWeight="Bold" FontSize="40"
+                       HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Arial"/>
+          </Border>
+        </Template>
+      </Setter>
+    </Style>
+
+    <!-- Trigger für: S-BAHN (Grüner Kreis) -->
+    <Style Selector="local|VvoIcon[Type=SBahn] /template/ ContentControl#IconContent">
+      <Setter Property="Content">
+        <Template>
+          <Border Width="100" Height="100" Background="#009639" CornerRadius="50">
+            <TextBlock Text="S" Foreground="White" FontWeight="Bold" FontSize="80"
+                       HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Arial"/>
+          </Border>
+        </Template>
+      </Setter>
+    </Style>
+
+    <!-- Trigger für: BUS (Dunkelblauer Kreis) -->
+    <Style Selector="local|VvoIcon[Type=Bus] /template/ ContentControl#IconContent">
+      <Setter Property="Content">
+        <Template>
+          <Border Width="100" Height="100" Background="#003B5C" CornerRadius="50">
+            <TextBlock Text="BUS" Foreground="White" FontWeight="Bold" FontSize="35"
+                       HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Arial"/>
+          </Border>
+        </Template>
+      </Setter>
+    </Style>
+
+    <!-- Trigger für: FÄHRE (Hellblauer Kreis mit Welle) -->
+    <Style Selector="local|VvoIcon[Type=Faehre] /template/ ContentControl#IconContent">
+      <Setter Property="Content">
+        <Template>
+          <Border Width="100" Height="100" Background="#009AD6" CornerRadius="50">
+            <Grid>
+              <TextBlock Text="F" Foreground="White" FontStyle="Italic" FontWeight="ExtraBold" FontSize="56"
+                         HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-5,0,5" FontFamily="Times New Roman"/>
+              <Path Data="M 15,75 Q 35,63 55,75 T 85,75" Stroke="White" StrokeThickness="5"
+                    VerticalAlignment="Bottom" Margin="0,0,0,16"/>
+            </Grid>
+          </Border>
+        </Template>
+      </Setter>
+    </Style>
+
+  </Window.Styles>
+  
+  
+
+    <Grid Margin="2">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"></ColumnDefinition>
+        <ColumnDefinition Width="*"></ColumnDefinition>        
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="*"></RowDefinition>
+        <RowDefinition Height="*"></RowDefinition>
+      </Grid.RowDefinitions>
+
+      <!-- ColumnDefinitions="*,*,*"  -->
+   <!--   <Button Name="greetingButton">Hello World</Button>-->
+      <!-- SPALTE 1: WEINBÖHLA -->
+      <Border Grid.Column="0" Grid.Row="0" BorderBrush="#333333" BorderThickness="2" CornerRadius="8" Margin="5">
+        <Grid RowDefinitions="Auto, *">
+<!--          <local:VvoIcon Type="Bus" Size="32"/>-->
+          <TextBlock Grid.Row="0" Text="DB Weinböhla (RE)" Foreground="#FFCC22" FontSize="{Binding DataContext.HeaderFontSize, ElementName=RootWindow}" HorizontalAlignment="Center" Margin="5"/>
+
+          <ListBox Grid.Row="1" Background="Transparent" ItemsSource="{Binding WeinboehlaDepartures}" IsHitTestVisible="False">
+            <ListBox.ItemTemplate >
+              <DataTemplate>
+                <Grid  >
+                <!-- ShowGridLines="true" -->
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="{Binding DataContext.ColWidth0, ElementName=RootWindow, Converter={StaticResource GridLengthConverter}}" />
+                    <ColumnDefinition Width="{Binding DataContext.ColWidth1, ElementName=RootWindow, Converter={StaticResource GridLengthConverter}}" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="{Binding DataContext.ColWidth3, ElementName=RootWindow, Converter={StaticResource GridLengthConverter}}" />
+                    <ColumnDefinition Width="{Binding DataContext.ColWidth4, ElementName=RootWindow, Converter={StaticResource GridLengthConverter}}" />
+                  </Grid.ColumnDefinitions>
+                  <local:VvoIcon Size="{Binding DataContext.IconSize, ElementName=RootWindow}" Grid.Column="0" Type="{Binding MeansOfTransport}" HorizontalAlignment="Left"/>
+                         <!--         {Binding IconSize}  -->
+                  <!--<TextBlock Grid.Column="0" Text="{Binding Mot}" FontWeight="Bold" Foreground="Black" FontSize="20"/>-->
+                  <TextBlock Grid.Column="1" Text="{Binding LineName}" FontWeight="Bold" Foreground="Black" FontSize="{Binding DataContext.LineNameFontSize, ElementName=RootWindow}"/>
+                  <TextBlock Grid.Column="2" Text="{Binding Direction}" Foreground="Black" FontSize="{Binding DataContext.LineInfoFontSize, ElementName=RootWindow}"/>
+                  <TextBlock Grid.Column="3" Text="{Binding DepartureAsString}" Foreground="Black" FontSize="{Binding DataContext.LineInfoFontSize, ElementName=RootWindow}" IsVisible="{Binding IsInTime}" Margin="3,0,2,0"/>
+                  <TextBlock Grid.Column="3" Text="{Binding DepartureAsString}" Foreground="Red" FontSize="{Binding DataContext.LineInfoFontSize, ElementName=RootWindow}" IsVisible="{Binding IsDelayed}" Margin="3,0,2,0"/>
+                  <TextBlock Grid.Column="4" Text="{Binding DepartureTimeAsString}" Foreground="Black" FontSize="{Binding DataContext.LineInfoFontSize, ElementName=RootWindow}" HorizontalAlignment="Right"/>
+                  <!--<TextBlock Grid.Column="5" Text="{Binding ScheduledDepartureTimeInMinutes}" Foreground="Black" FontSize="18"/>-->
+                  <!--<TextBlock Grid.Column="3" Text="{Binding Countdown, StringFormat='\{0\} min'}" Foreground="#FFCC00" FontSize="20" HorizontalAlignment="Right"/>-->
+                </Grid>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </Grid>
+      </Border>
+
+      <!-- SPALTE 2: NEUSÖRNEWITZ -->
+     
+      <Border Grid.Column="1" Grid.Row="0" BorderBrush="#333333" BorderThickness="2" CornerRadius="8" Margin="5">
+        <Grid RowDefinitions="Auto, *">
+          <TextBlock Grid.Row="0" Text="DB Neusörnewitz (S1)" Foreground="#FFCC00" FontSize="{Binding DataContext.HeaderFontSize, ElementName=RootWindow}" HorizontalAlignment="Center" Margin="5"/>
+
+          <ListBox Grid.Row="1" Background="Transparent" ItemsSource="{Binding NeusoernewitzDepartures}" IsHitTestVisible="False">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <Grid  >
+                  <!-- ShowGridLines="true" -->
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="{Binding DataContext.ColWidth0, ElementName=RootWindow, Converter={StaticResource GridLengthConverter}}" />
+                    <ColumnDefinition Width="{Binding DataContext.ColWidth1, ElementName=RootWindow, Converter={StaticResource GridLengthConverter}}" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="{Binding DataContext.ColWidth3, ElementName=RootWindow, Converter={StaticResource GridLengthConverter}}" />
+                    <ColumnDefinition Width="{Binding DataContext.ColWidth4, ElementName=RootWindow, Converter={StaticResource GridLengthConverter}}" />
+                  </Grid.ColumnDefinitions>
+                  <local:VvoIcon Size="{Binding DataContext.IconSize, ElementName=RootWindow}" Grid.Column="0" Type="{Binding MeansOfTransport}" HorizontalAlignment="Left"/>
+                  <!--<TextBlock Grid.Column="0" Text="{Binding Mot}" FontWeight="Bold" Foreground="Black" FontSize="20"/>-->
+                  <TextBlock Grid.Column="1" Text="{Binding LineName}" FontWeight="Bold" Foreground="Black" FontSize="{Binding DataContext.LineNameFontSize, ElementName=RootWindow}"/>
+                  <TextBlock Grid.Column="2" Text="{Binding Direction}" Foreground="Black" FontSize="{Binding DataContext.LineInfoFontSize, ElementName=RootWindow}"/>
+                  <TextBlock Grid.Column="3" Text="{Binding DepartureAsString}" Foreground="Black" FontSize="{Binding DataContext.LineInfoFontSize, ElementName=RootWindow}" IsVisible="{Binding IsInTime}" Margin="3,0,2,0"/>
+                  <TextBlock Grid.Column="3" Text="{Binding DepartureAsString}" Foreground="Red"  FontSize="{Binding DataContext.LineInfoFontSize, ElementName=RootWindow}" IsVisible="{Binding IsDelayed}" Margin="3,0,2,0"/>
+                  <TextBlock Grid.Column="4" Text="{Binding DepartureTimeAsString}" Foreground="Black" FontSize="{Binding DataContext.LineInfoFontSize, ElementName=RootWindow}" HorizontalAlignment="Right"/>
+                  <!--<TextBlock Grid.Column="5" Text="{Binding ScheduledDepartureTimeInMinutes}" Foreground="Black" FontSize="18"/>-->
+                  <!--<TextBlock Grid.Column="3" Text="{Binding Countdown, StringFormat='\{0\} min'}" Foreground="#FFCC00" FontSize="20" HorizontalAlignment="Right"/>-->
+                </Grid>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </Grid>
+      </Border>
+
+      <!-- SPALTE 3: KÖHLERSTRAẞE -->
+      
+      <Border Grid.Column="0" Grid.Row="1" BorderBrush="#333333" BorderThickness="2" CornerRadius="8" Margin="5">
+        <Grid RowDefinitions="Auto, *">
+          <TextBlock Grid.Row="0" Text="DVB Köhlerstraße (Tram 4)" Foreground="#FFCC00" FontSize="{Binding DataContext.HeaderFontSize, ElementName=RootWindow}" HorizontalAlignment="Center" Margin="5"/>
+
+          <ListBox Grid.Row="1" Background="Transparent" ItemsSource="{Binding WeinboehlaTramDepartures}" IsHitTestVisible="False">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <Grid  >
+                  <!-- ShowGridLines="true" -->
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="{Binding DataContext.ColWidth0, ElementName=RootWindow, Converter={StaticResource GridLengthConverter}}" />
+                    <ColumnDefinition Width="{Binding DataContext.ColWidth1, ElementName=RootWindow, Converter={StaticResource GridLengthConverter}}" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="{Binding DataContext.ColWidth3, ElementName=RootWindow, Converter={StaticResource GridLengthConverter}}" />
+                    <ColumnDefinition Width="{Binding DataContext.ColWidth4, ElementName=RootWindow, Converter={StaticResource GridLengthConverter}}" />
+                  </Grid.ColumnDefinitions>
+                  <local:VvoIcon Size="{Binding DataContext.IconSize, ElementName=RootWindow}" Grid.Column="0" Type="{Binding MeansOfTransport}" HorizontalAlignment="Left"/>
+                  <!--<TextBlock Grid.Column="0" Text="{Binding Mot}" FontWeight="Bold" Foreground="Black" FontSize="20"/>-->
+                  <TextBlock Grid.Column="1" Text="{Binding LineName}" FontWeight="Bold" Foreground="Black" FontSize="{Binding DataContext.LineNameFontSize, ElementName=RootWindow}"/>
+                  <TextBlock Grid.Column="2" Text="{Binding Direction}" Foreground="Black" FontSize="{Binding DataContext.LineInfoFontSize, ElementName=RootWindow}"/>
+                  <TextBlock Grid.Column="3" Text="{Binding DepartureAsString}" Foreground="Black" FontSize="{Binding DataContext.LineInfoFontSize, ElementName=RootWindow}" IsVisible="{Binding IsInTime}" Margin="3,0,2,0"/>
+                  <TextBlock Grid.Column="3" Text="{Binding DepartureAsString}" Foreground="Red" FontSize="{Binding DataContext.LineInfoFontSize, ElementName=RootWindow}" IsVisible="{Binding IsDelayed}" Margin="3,0,2,0"/>
+                  <TextBlock Grid.Column="4" Text="{Binding DepartureTimeAsString}" Foreground="Black" FontSize="{Binding DataContext.LineInfoFontSize, ElementName=RootWindow}" HorizontalAlignment="Right"/>
+                  <!--<TextBlock Grid.Column="5" Text="{Binding ScheduledDepartureTimeInMinutes}" Foreground="Black" FontSize="18"/>-->
+                  <!--<TextBlock Grid.Column="3" Text="{Binding Countdown, StringFormat='\{0\} min'}" Foreground="#FFCC00" FontSize="20" HorizontalAlignment="Right"/>-->
+                </Grid>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </Grid>
+      </Border>
+
+      <!-- SPALTE 4 -->
+
+      <Border Grid.Column="1" Grid.Row="1" BorderBrush="#333333" BorderThickness="2" CornerRadius="8" Margin="5">
+        <Grid RowDefinitions="Auto,Auto,Auto,Auto, *">
+          <TextBlock Grid.Row="0" Text="{Binding TimeAsStr}" Foreground="#000000" FontSize="32" Width="450" HorizontalAlignment="Center" Margin="5" TextAlignment="Center"  />
+          <!--  FontFamily="Courier New" FontFamily="Roboto Mono"-->
+          <TextBlock Grid.Row="1" Text="{Binding LastUpadateAsStr}" Foreground="#000000" FontSize="26" Width="450" HorizontalAlignment="Center" Margin="5" TextAlignment="Center" />
+          
+          
+          <TextBlock Grid.Row="2" Name="CancelTextBlock" Text="{Binding CancelReasonsText}" Foreground="Black"    FontSize="15" HorizontalAlignment="Stretch"/>       <!-- Background="Red"-->
+        </Grid>
+      </Border>
+      
+
+    </Grid>
+  <!--  <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>  -->
+
+</Window>
+
+

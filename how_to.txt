@@ -1,0 +1,5 @@
+# For Raspberry Pi 64-bit OS (Highly recommended)
+dotnet publish -r linux-arm64 -c Release --self-contained
+
+# For Raspberry Pi 32-bit OS
+dotnet publish -r linux-arm -c Release --self-contained
