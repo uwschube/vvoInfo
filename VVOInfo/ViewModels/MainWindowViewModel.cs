@@ -152,12 +152,12 @@ public partial class MainWindowViewModel : ViewModelBase
                 }
             }
             var now = DateTime.Now.AddMinutes(1);
-            var keysToRemove = cachedStops.Values.Where(o => o.ScheduledTimeDateTime < now).Select(o => o.Key);
+            var keysToRemove = cachedStops.Values.Where(o => o.RealTimeDateTime < now).Select(o => o.Key);
             foreach(var keyToRemove in keysToRemove)
             {
                 cachedStops.Remove(keyToRemove);
             }
-            foreach (var departure in cachedStops.Values.ToList().OrderBy(o => o.ScheduledTimeDateTime))
+            foreach (var departure in cachedStops.Values.ToList().OrderBy(o => o.RealTimeDateTime))
             {
                 if (departures.Count < MaxLines)
                 {
