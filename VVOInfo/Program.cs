@@ -10,13 +10,22 @@ namespace VVOInfo;
 
 sealed class Program
 {
-    private static readonly ILog log = LogManager.GetLogger(typeof(Program));
+    private static readonly ILog log = LogManager.GetLogger("DefaultLogger");
 
     [STAThread]
     public static void Main(string[] args)
     {
-        var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
-        XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
+        var entryAssembly = Assembly.GetEntryAssembly();
+        var configFile = new FileInfo("log4net.config");
+
+        if (entryAssembly != null && configFile.Exists)
+        {
+            var logRepository = LogManager.GetRepository(entryAssembly);
+            XmlConfigurator.Configure(logRepository, configFile);
+        }
+
+        //var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
+        //XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
         log.Info("VVOInfo App wird gestartet...");
 
         BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);

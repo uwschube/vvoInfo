@@ -138,11 +138,11 @@ Width="1500" Height="900"
                     <ColumnDefinition Width="{Binding DataContext.ColWidth3, ElementName=RootWindow, Converter={StaticResource GridLengthConverter}}" />
                     <ColumnDefinition Width="{Binding DataContext.ColWidth4, ElementName=RootWindow, Converter={StaticResource GridLengthConverter}}" />
                   </Grid.ColumnDefinitions>
-                  <local:VvoIcon Size="{Binding DataContext.IconSize, ElementName=RootWindow}" Grid.Column="0" Type="{Binding MeansOfTransport}" HorizontalAlignment="Left"/>
+                  <local:VvoIcon Size="{Binding DataContext.IconSize, ElementName=RootWindow}" Grid.Column="0" Type="{Binding MeansOfTransport}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                          <!--         {Binding IconSize}  -->
                   <!--<TextBlock Grid.Column="0" Text="{Binding Mot}" FontWeight="Bold" Foreground="Black" FontSize="20"/>-->
                   <TextBlock Grid.Column="1" Text="{Binding LineName}" FontWeight="Bold" Foreground="Black" FontSize="{Binding DataContext.LineNameFontSize, ElementName=RootWindow}"/>
-                  <TextBlock Grid.Column="2" Text="{Binding Direction}" Foreground="Black" FontSize="{Binding DataContext.LineInfoFontSize, ElementName=RootWindow}"/>
+                  <TextBlock Grid.Column="2" Text="{Binding DirectionAsString}" Foreground="Black" FontSize="{Binding DataContext.LineInfoFontSize, ElementName=RootWindow}"/>
                   <TextBlock Grid.Column="3" Text="{Binding DepartureAsString}" Foreground="Black" FontSize="{Binding DataContext.LineInfoFontSize, ElementName=RootWindow}" IsVisible="{Binding IsInTime}" Margin="3,0,2,0"/>
                   <TextBlock Grid.Column="3" Text="{Binding DepartureAsString}" Foreground="Red" FontSize="{Binding DataContext.LineInfoFontSize, ElementName=RootWindow}" IsVisible="{Binding IsDelayed}" Margin="3,0,2,0"/>
                   <TextBlock Grid.Column="4" Text="{Binding DepartureTimeAsString}" Foreground="Black" FontSize="{Binding DataContext.LineInfoFontSize, ElementName=RootWindow}" HorizontalAlignment="Right"/>
@@ -173,10 +173,10 @@ Width="1500" Height="900"
                     <ColumnDefinition Width="{Binding DataContext.ColWidth3, ElementName=RootWindow, Converter={StaticResource GridLengthConverter}}" />
                     <ColumnDefinition Width="{Binding DataContext.ColWidth4, ElementName=RootWindow, Converter={StaticResource GridLengthConverter}}" />
                   </Grid.ColumnDefinitions>
-                  <local:VvoIcon Size="{Binding DataContext.IconSize, ElementName=RootWindow}" Grid.Column="0" Type="{Binding MeansOfTransport}" HorizontalAlignment="Left"/>
+                  <local:VvoIcon Size="{Binding DataContext.IconSize, ElementName=RootWindow}" Grid.Column="0" Type="{Binding MeansOfTransport}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                   <!--<TextBlock Grid.Column="0" Text="{Binding Mot}" FontWeight="Bold" Foreground="Black" FontSize="20"/>-->
                   <TextBlock Grid.Column="1" Text="{Binding LineName}" FontWeight="Bold" Foreground="Black" FontSize="{Binding DataContext.LineNameFontSize, ElementName=RootWindow}"/>
-                  <TextBlock Grid.Column="2" Text="{Binding Direction}" Foreground="Black" FontSize="{Binding DataContext.LineInfoFontSize, ElementName=RootWindow}"/>
+                  <TextBlock Grid.Column="2" Text="{Binding DirectionAsString}" Foreground="Black" FontSize="{Binding DataContext.LineInfoFontSize, ElementName=RootWindow}"/>
                   <TextBlock Grid.Column="3" Text="{Binding DepartureAsString}" Foreground="Black" FontSize="{Binding DataContext.LineInfoFontSize, ElementName=RootWindow}" IsVisible="{Binding IsInTime}" Margin="3,0,2,0"/>
                   <TextBlock Grid.Column="3" Text="{Binding DepartureAsString}" Foreground="Red"  FontSize="{Binding DataContext.LineInfoFontSize, ElementName=RootWindow}" IsVisible="{Binding IsDelayed}" Margin="3,0,2,0"/>
                   <TextBlock Grid.Column="4" Text="{Binding DepartureTimeAsString}" Foreground="Black" FontSize="{Binding DataContext.LineInfoFontSize, ElementName=RootWindow}" HorizontalAlignment="Right"/>
@@ -207,10 +207,10 @@ Width="1500" Height="900"
                     <ColumnDefinition Width="{Binding DataContext.ColWidth3, ElementName=RootWindow, Converter={StaticResource GridLengthConverter}}" />
                     <ColumnDefinition Width="{Binding DataContext.ColWidth4, ElementName=RootWindow, Converter={StaticResource GridLengthConverter}}" />
                   </Grid.ColumnDefinitions>
-                  <local:VvoIcon Size="{Binding DataContext.IconSize, ElementName=RootWindow}" Grid.Column="0" Type="{Binding MeansOfTransport}" HorizontalAlignment="Left"/>
+                  <local:VvoIcon Size="{Binding DataContext.IconSize, ElementName=RootWindow}" Grid.Column="0" Type="{Binding MeansOfTransport}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                   <!--<TextBlock Grid.Column="0" Text="{Binding Mot}" FontWeight="Bold" Foreground="Black" FontSize="20"/>-->
                   <TextBlock Grid.Column="1" Text="{Binding LineName}" FontWeight="Bold" Foreground="Black" FontSize="{Binding DataContext.LineNameFontSize, ElementName=RootWindow}"/>
-                  <TextBlock Grid.Column="2" Text="{Binding Direction}" Foreground="Black" FontSize="{Binding DataContext.LineInfoFontSize, ElementName=RootWindow}"/>
+                  <TextBlock Grid.Column="2" Text="{Binding DirectionAsString}" Foreground="Black" FontSize="{Binding DataContext.LineInfoFontSize, ElementName=RootWindow}"/>
                   <TextBlock Grid.Column="3" Text="{Binding DepartureAsString}" Foreground="Black" FontSize="{Binding DataContext.LineInfoFontSize, ElementName=RootWindow}" IsVisible="{Binding IsInTime}" Margin="3,0,2,0"/>
                   <TextBlock Grid.Column="3" Text="{Binding DepartureAsString}" Foreground="Red" FontSize="{Binding DataContext.LineInfoFontSize, ElementName=RootWindow}" IsVisible="{Binding IsDelayed}" Margin="3,0,2,0"/>
                   <TextBlock Grid.Column="4" Text="{Binding DepartureTimeAsString}" Foreground="Black" FontSize="{Binding DataContext.LineInfoFontSize, ElementName=RootWindow}" HorizontalAlignment="Right"/>

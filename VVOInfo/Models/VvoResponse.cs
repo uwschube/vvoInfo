@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading;
 using VVOInfo.Views;
 
 namespace VVOInfo.Models
@@ -71,10 +72,35 @@ namespace VVOInfo.Models
         public string Code { get; set; }
     }
 
+    public class CancelReason {
+
+        public CancelReason()
+        {
+            Reason = string.Empty;
+            AdditionalText = string.Empty;
+        }
+
+        [JsonPropertyName("Reason")]
+        public string Reason { get; set; }
+
+        [JsonPropertyName("AdditionalText")]
+        public string AdditionalText { get; set; }
+    }
+
     public class DepartureItem
     {
+        public string Key
+        {
+            get {
+                return $"{ScheduledTime}_{LineName}_{Direction}";
+            }
+        }
+
+        public Boolean IsMissingInDataResponse { get; set;  }
+
         public DepartureItem()
         {
+            IsMissingInDataResponse = true;
             Id = string.Empty;
             DlId = string.Empty;
             LineName = string.Empty;
@@ -85,7 +111,7 @@ namespace VVOInfo.Models
             ScheduledTime = string.Empty;
             State = string.Empty;
             RouteChanges = new List<string>();
-            CancelReasons = new List<string>();
+            CancelReasons = new List<CancelReason>();
             Occupancy = string.Empty;
         }
 
@@ -118,6 +144,20 @@ namespace VVOInfo.Models
         public DateTime ScheduledTimeDateTime { get; set; }
         public DateTimeOffset ScheduledTimeDateTimeOffset { get; set; }
         public int ScheduledDepartureTimeInMinutes { get; set; } // Berechnet aus RealTime und aktuellem Zeitpunkt
+
+        public string DirectionAsString {
+            get
+            {
+                var sb = new StringBuilder();
+                sb.Append(Direction);
+                if (CancelReasons != null && CancelReasons.Count > 0)
+                {
+                    sb.AppendLine("");
+                    sb.Append(CancelReasons[0].Reason).Append(" ").Append(CancelReasons[0].AdditionalText);
+                }
+                return sb.ToString();
+            }
+        }
 
         public string DepartureTimeAsString
         {
@@ -153,6 +193,14 @@ namespace VVOInfo.Models
             {
                 try
                 {
+                    if (State == "Cancelled")
+                    {
+                        return "Cancelled";
+                    }
+                    if (IsMissingInDataResponse)
+                    {
+                        return "?Missing in Data Response?";
+                    }
                     var sb = new StringBuilder();
                     sb.Append("in ");
                     int h = RealDepartureTimeInMinutes / 60;
@@ -191,6 +239,15 @@ namespace VVOInfo.Models
             {
                 try
                 {
+                    if (State == "Cancelled")
+                    {
+                        return false;
+                    }
+                    if (IsMissingInDataResponse)
+                    {
+                        return false;
+                    }
+
                     var diff = RealDepartureTimeInMinutes - ScheduledDepartureTimeInMinutes;
                     return diff <= 1;
                 }catch(Exception ex)
@@ -206,8 +263,18 @@ namespace VVOInfo.Models
         {
             get
             {
+                return !IsInTime;
+                /*
                 try
                 {
+                    if (State == "Cancelled")
+                    {
+                        return true;
+                    }
+                    if (IsMissingInDataResponse)
+                    {
+                        return true;
+                    }
                     var diff = RealDepartureTimeInMinutes - ScheduledDepartureTimeInMinutes;
                     return diff > 1;
                 }
@@ -215,7 +282,7 @@ namespace VVOInfo.Models
                 {
                     Console.WriteLine($"Fehler in IsDelayed: {ex.Message}");
                     return true;
-                }
+                }*/
 
             }
         }
@@ -255,7 +322,7 @@ namespace VVOInfo.Models
         public List<string> RouteChanges { get; set; } = new List<string>();
 
         [JsonPropertyName("CancelReasons")]
-        public List<string> CancelReasons { get; set; } = new List<string>();
+        public List<CancelReason> CancelReasons { get; set; } = new List<CancelReason>();
 
         [JsonPropertyName("Occupancy")]
         public string Occupancy { get; set; }

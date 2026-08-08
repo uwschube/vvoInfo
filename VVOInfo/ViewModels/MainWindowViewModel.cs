@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Controls.Shapes;
+using CommunityToolkit.Mvvm.ComponentModel;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace VVOInfo.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    private static readonly ILog log = LogManager.GetLogger(typeof(Program));
+    private static readonly ILog log = LogManager.GetLogger("DefaultLogger");
 
     private int MaxLines = 9;
 
@@ -23,6 +24,8 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private List<String> BlackList = new List<string>() { "Cottbus", "Leipzig", "Meißen", "Großenhain", "Weinböhla", "Ruhland", "Glaubitz", "Risa", "Radeburg", "Niederau",
         "Elsterwerda", "Priestewitz", "Großdobritz", "Steinbach", "Hoyerswerda" };
+
+    private List<String> BlackList2 = new List<string>() { };
 
     public ObservableCollection<DepartureItem> WeinboehlaDepartures { get; set; } = new ObservableCollection<DepartureItem>();
     public ObservableCollection<DepartureItem> NeusoernewitzDepartures { get; set; } = new ObservableCollection<DepartureItem>();
@@ -108,31 +111,61 @@ public partial class MainWindowViewModel : ViewModelBase
 
 
     StringBuilder CancelReasonsStringBuilder = new StringBuilder();
+    protected Dictionary<string, Dictionary<string, DepartureItem>> DataCache = new Dictionary<string, Dictionary<string, DepartureItem>>();
+
 
     private async Task<List<DepartureItem>> GetDepartures(String vvoStationId)
     {
         log.Info("vvoStationId:" + vvoStationId);
+
+        if (!DataCache.TryGetValue(vvoStationId, out var cachedStops))
+        {
+            cachedStops = new Dictionary<string, DepartureItem>();
+            DataCache.Add(vvoStationId, cachedStops);
+        }
+
+        foreach (var departure in cachedStops.Values)
+        {
+            departure.IsMissingInDataResponse = true;
+        }
+
         List <DepartureItem> departures = new List<DepartureItem>(20);
         try
         {
-            int line = 0;
             DepartureResponse departureResponse = await _departureService.GetDeparturesAsync3(vvoStationId);
             foreach (var departure in departureResponse.Departures)
             {
-                String cancelReason = departure.CancelReasons != null ? string.Join(", ", departure.CancelReasons) : "";
+                String cancelReason = "";// departure.CancelReasons != null ? string.Join(", ", departure.CancelReasons) : "";
                 CancelReasonsStringBuilder.Append(cancelReason);
               //  Debug.WriteLine($@"Mot:{departure.Mot} Line:{departure.LineName}, p1:{departure.Platform?.Name} p1:{departure.Platform?.PlatformType} State:{departure.State} Occupancy:{departure.Occupancy} CancelReasons:{cancelReason}");
 
-                log.Info($@"Mot:{departure.Mot} Line:{departure.LineName}, p1:{departure.Platform?.Name} p1:{departure.Platform?.PlatformType} State:{departure.State} Occupancy:{departure.Occupancy} CancelReasons:{cancelReason}");
+                if (departure.CancelReasons != null && departure.CancelReasons.Count > 0)
+                {
+                    cancelReason = $"Reason: {departure.CancelReasons[0].Reason} AdditionalText: {departure.CancelReasons[0].AdditionalText}";
+                }
+                departure.IsMissingInDataResponse = false;
+
+                log.Info($@"Mot:{departure.Mot} Line:{departure.LineName}, p1:{departure.Platform?.Name} p1:{departure.Platform?.PlatformType} State:{departure.State} Occupancy:{departure.Occupancy} CancelReasons:{cancelReason} DlId:{departure.DlId} Id:{departure.Id}");
                 if (!BlackList.Any(bl => departure.Direction.Contains(bl)))
                 {
-                    if (line < MaxLines)
-                    {
-                        departures.Add(departure);
-                    }
-                    line++;
+                    cachedStops[departure.Key] = departure;
                 }
             }
+            var now = DateTime.Now.AddMinutes(1);
+            var keysToRemove = cachedStops.Values.Where(o => o.ScheduledTimeDateTime < now).Select(o => o.Key);
+            foreach(var keyToRemove in keysToRemove)
+            {
+                cachedStops.Remove(keyToRemove);
+            }
+            foreach (var departure in cachedStops.Values.ToList().OrderBy(o => o.ScheduledTimeDateTime))
+            {
+                if (departures.Count < MaxLines)
+                {
+                    departures.Add(departure);
+                }
+            }
+
+
         }
         catch (Exception ex)
         {

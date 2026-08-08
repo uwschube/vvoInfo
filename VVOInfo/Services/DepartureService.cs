@@ -14,7 +14,8 @@ namespace VVOInfo.Services
 {
     public class DepartureService
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(Program));
+        private static readonly ILog log = LogManager.GetLogger("DefaultLogger");
+        private static readonly ILog dataLogger = LogManager.GetLogger("DataLogger");
 
         private static readonly HttpClient _client = new HttpClient();
         // private const string ApiUrl = "https://webapi.vvo-online.de/dm?format=json";
@@ -28,11 +29,13 @@ namespace VVOInfo.Services
             var requestData = new DepartureRequest
             {
                 StopId = "33000028", // Beispiel: Dresden Hauptbahnhof
-                Limit = 30
+                Limit = 40
             };
             requestData.StopId = stopId;
             string jsonPayload = JsonSerializer.Serialize(requestData);
+            string jsonResponse = "";
             var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+            dataLogger.Info($"Request: {jsonPayload}");
 
             // 2. HTTP-Anfrage konfigurieren (User-Agent ist PFLICHT)
             var request = new HttpRequestMessage(HttpMethod.Post, url);
@@ -45,7 +48,8 @@ namespace VVOInfo.Services
                 HttpResponseMessage response = await _client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
 
-                string jsonResponse = await response.Content.ReadAsStringAsync();
+                jsonResponse = await response.Content.ReadAsStringAsync();
+                dataLogger.Info($"Response: {jsonResponse}");
 
                 // 4. JSON deserialisieren
                 var result = JsonSerializer.Deserialize<DepartureResponse>(jsonResponse);
@@ -57,6 +61,7 @@ namespace VVOInfo.Services
                // Console.WriteLine($"--- Nächste Abfahrten (ID: {requestData.StopId}) ---");
                 foreach (var departure in result.Departures)
                 {
+                    departure.IsMissingInDataResponse = false;
                     try
                     {
                         departure.RealTimeDateTime = departure.ScheduledTimeDateTime = ParseVvoToDateTime(departure.ScheduledTime);
@@ -68,6 +73,7 @@ namespace VVOInfo.Services
                             departure.RealTimeDateTimeOffset = ParseVvoTimestampOffset(departure.RealTime);
                             departure.RealDepartureTimeInMinutes = DepartureInMinutes(departure.RealTimeDateTime);
                         }
+
                     }
                     catch (Exception ex)
                     {
@@ -82,7 +88,8 @@ namespace VVOInfo.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Fehler bei der Abfrage: {ex.Message}");
+                Console.WriteLine($"Fehler bei der Abfrage: {ex.Message} + request:{jsonPayload} jsonResponse:{jsonResponse}");
+                log.Error($"Fehler bei der Abfrage: {ex.Message} + request:{jsonPayload} jsonResponse:{jsonResponse}");
                 throw;
             }
         }
