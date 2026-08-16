@@ -158,6 +158,20 @@ namespace VVOInfo.Models
                 return sb.ToString();
             }
         }
+        public string ScheduledTimeAsString {
+            get
+            {
+                try
+                {
+                    return ScheduledTimeDateTime.ToString("HH:mm");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Fehler in ScheduledTimeAsString: {ex.Message}");
+                    return "Error";
+                }
+            }
+        } 
 
         public string DepartureTimeAsString
         {

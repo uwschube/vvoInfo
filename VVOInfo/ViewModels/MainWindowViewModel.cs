@@ -48,6 +48,9 @@ public partial class MainWindowViewModel : ViewModelBase
     private int _LineInfoFontSize;//Berlin, Neustadt,  in 5 min, 12:45
 
     [ObservableProperty]
+    private int _LineInfoOrgFontSize;//10:15
+
+    [ObservableProperty]
     private int _HeaderFontSize;//Name der Haltestelle
 
     [ObservableProperty]
@@ -68,6 +71,9 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private double _ColWidth4;
 
+    [ObservableProperty]
+    private double _ColWidth5;
+
 
     public MainWindowViewModel()
     {
@@ -77,10 +83,14 @@ public partial class MainWindowViewModel : ViewModelBase
         ColWidth1 = 70;
         ColWidth3 = 200;
         ColWidth4 = 65;
+        ColWidth5 = 40;
 
 
         LineNameFontSize = LineInfoFontSize + 1;
         HeaderFontSize = LineInfoFontSize + 5;
+        LineInfoOrgFontSize = (LineInfoFontSize / 2) + 3;
+
+  
 
 
         CancelReasonsText = "";
